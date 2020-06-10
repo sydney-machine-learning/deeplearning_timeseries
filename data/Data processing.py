@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[25]:
+# In[4]:
 
 
 import pandas as pd
@@ -12,12 +12,12 @@ from pandas import read_csv
 from pandas import DataFrame
 
 
-# In[26]:
+# In[5]:
 
 
 def split_sequence(sequence, n_steps_in, n_steps_out):
     X, y = list(), list()
-    for i in range(465):
+    for i in range(len(sequence)):
         # find the end of this pattern
         end_ix = i + n_steps_in
         out_end_ix = end_ix + n_steps_out
@@ -31,7 +31,7 @@ def split_sequence(sequence, n_steps_in, n_steps_out):
     return array(X), array(y)
 
 
-# In[27]:
+# In[6]:
 
 
 def main():
