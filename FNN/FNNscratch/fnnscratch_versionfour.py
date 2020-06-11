@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[13]:
+# In[16]:
 
 
 # Rohitash Chandra, 2017 c.rohitash@gmail.conm
@@ -213,7 +213,7 @@ class Network:
 		return (er, bestRMSE,  epoch, actual, predicted) 
 
 
-# In[14]:
+# In[17]:
 
 
 def normalisedata(data, inputsize, outsize): # normalise the data between [0,1]
@@ -223,7 +223,7 @@ def normalisedata(data, inputsize, outsize): # normalise the data between [0,1]
 	return np.concatenate(( tds[:,range(0,inputsize)], data[:,range(inputsize,inputsize+outsize)]), axis=1)
 
 
-# In[15]:
+# In[18]:
 
 
 def main(): 
@@ -339,8 +339,8 @@ def main():
 
         arr.to_csv("../../data/"+name+"/FNNscratchAnalysis/ExpAnalysis.csv") 
 
-        arr1 = np.vstack(([np.mean(trainRMSE),np.std(trainRMSE)],[np.mean(testRMSE), np.std(testRMSE)],[np.mean(Time),np.std(Time)],[np.mean(Epochs),np.std(Epochs)]))
-        arr1 = pd.DataFrame(arr1, index=['TrainRMSE','TestRMSE','Time','Epochs'], columns = ['Mean','Standard Deviation'])
+        arr1 = np.vstack(([np.mean(trainRMSE),np.std(trainRMSE),np.min(trainRMSE),np.max(trainRMSE)],[np.mean(testRMSE), np.std(testRMSE),np.min(testRMSE),np.max(testRMSE)],[np.mean(Time),np.std(Time),np.min(Time),np.max(Time)],[np.mean(Epochs),np.std(Epochs),np.min(Epochs),np.max(Epochs)]))
+        arr1 = pd.DataFrame(arr1, index=['TrainRMSE','TestRMSE','Time','Epochs'], columns = ['Mean','Standard Deviation','Min','Max'])
         print(arr1)
         arr1.to_csv("../../data/"+name+"/FNNscratchAnalysis/OverallAnalysis.csv")
 
@@ -364,4 +364,10 @@ def main():
 
  
 if __name__ == "__main__": main()
+
+
+# In[ ]:
+
+
+
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[2]:
 
 
 #source: https://github.com/sydney-machine-learning/parallel-tempering-neural-net/blob/master/multicore-pt-regression/Compare_benchmark/nn.py
@@ -97,8 +97,8 @@ def main():
         TrainRMSE_Std[0]=np.std(train_acc)
         TestRMSE_Std[0]=np.std(test_acc)
         
-        arr1 = np.vstack(([np.mean(train_acc),np.std(train_acc)],[np.mean(test_acc), np.std(test_acc)]))
-        arr1 = pd.DataFrame(arr1, index=['TrainRMSE','TestRMSE'], columns = ['Mean','Standard Deviation'])
+        arr1 = np.vstack(([np.mean(train_acc),np.std(train_acc),np.min(train_acc),np.max(train_acc)],[np.mean(test_acc), np.std(test_acc),np.min(test_acc),np.max(test_acc)]))
+        arr1 = pd.DataFrame(arr1, index=['TrainRMSE','TestRMSE'], columns = ['Mean','Standard Deviation','Min','Max'])
         print(arr1)
         arr1.to_csv("../../data/"+name+"/NNtimeseries_scikitearnAnalysis/mlp_adam_OverallAnalysis.csv")
         
@@ -132,8 +132,8 @@ def main():
         TrainRMSE_Std[1]=np.std(train_acc)
         TestRMSE_Std[1]=np.std(test_acc)
         
-        arr1 = np.vstack(([np.mean(train_acc),np.std(train_acc)],[np.mean(test_acc), np.std(test_acc)]))
-        arr1 = pd.DataFrame(arr1, index=['TrainRMSE','TestRMSE'], columns = ['Mean','Standard Deviation'])
+        arr1 = np.vstack(([np.mean(train_acc),np.std(train_acc),np.min(train_acc),np.max(train_acc)],[np.mean(test_acc), np.std(test_acc),np.min(test_acc),np.max(test_acc)]))
+        arr1 = pd.DataFrame(arr1, index=['TrainRMSE','TestRMSE'], columns = ['Mean','Standard Deviation','Min','Max'])
         print(arr1)
         arr1.to_csv("../../data/"+name+"/NNtimeseries_scikitearnAnalysis/mlp_sgd_OverallAnalysis.csv")
         
@@ -167,8 +167,8 @@ def main():
         TrainRMSE_Std[2]=np.std(train_acc)
         TestRMSE_Std[2]=np.std(test_acc)
         
-        arr1 = np.vstack(([np.mean(train_acc),np.std(train_acc)],[np.mean(test_acc), np.std(test_acc)]))
-        arr1 = pd.DataFrame(arr1, index=['TrainRMSE','TestRMSE'], columns = ['Mean','Standard Deviation'])
+        arr1 = np.vstack(([np.mean(train_acc),np.std(train_acc),np.min(train_acc),np.max(train_acc)],[np.mean(test_acc), np.std(test_acc),np.min(test_acc),np.max(test_acc)]))
+        arr1 = pd.DataFrame(arr1, index=['TrainRMSE','TestRMSE'], columns = ['Mean','Standard Deviation','Min','Max'])
         print(arr1)
         arr1.to_csv("../../data/"+name+"/NNtimeseries_scikitearnAnalysis/RF_OverallAnalysis.csv")
         
