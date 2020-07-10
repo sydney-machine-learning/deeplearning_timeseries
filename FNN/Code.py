@@ -45,7 +45,7 @@ def rmse(pred, actual):
     return np.sqrt(sqerror)
 
 
-# In[15]:
+# In[3]:
 
 
 def Plot_Mean(name,Overall_Analysis,n_steps_out):
@@ -56,6 +56,7 @@ def Plot_Mean(name,Overall_Analysis,n_steps_out):
     Bi_LSTM=[Overall_Analysis[3][0],Overall_Analysis[3][5]]
     EN_DC=[Overall_Analysis[4][0],Overall_Analysis[4][5]]
     RNN=[Overall_Analysis[5][0],Overall_Analysis[5][5]]
+    CNN=[Overall_Analysis[6][0],Overall_Analysis[6][5]]
     
     yer1=np.array([Overall_Analysis[0][3]-Overall_Analysis[0][0],Overall_Analysis[0][8]-Overall_Analysis[0][5]])
     yer2=np.array([Overall_Analysis[1][3]-Overall_Analysis[1][0],Overall_Analysis[1][8]-Overall_Analysis[1][5]])
@@ -63,9 +64,10 @@ def Plot_Mean(name,Overall_Analysis,n_steps_out):
     yer4=np.array([Overall_Analysis[3][3]-Overall_Analysis[3][0],Overall_Analysis[3][8]-Overall_Analysis[3][5]])
     yer5=np.array([Overall_Analysis[4][3]-Overall_Analysis[4][0],Overall_Analysis[4][8]-Overall_Analysis[4][5]])
     yer6=np.array([Overall_Analysis[5][3]-Overall_Analysis[5][0],Overall_Analysis[5][8]-Overall_Analysis[5][5]])
+    yer7=np.array([Overall_Analysis[6][3]-Overall_Analysis[6][0],Overall_Analysis[6][8]-Overall_Analysis[6][5]])
     
-    width = 0.15  # the width of the bars
-    Plot(name,labels,width,MLP_Adam,MLP_Sgd,LSTM,Bi_LSTM,EN_DC,RNN,yer1,yer2,yer3,yer4,yer5,yer6,"","","Train&Test_RMSE_Mean_Comparison",4)
+    width = 0.12  # the width of the bars
+    Plot(name,labels,width,MLP_Adam,MLP_Sgd,LSTM,Bi_LSTM,EN_DC,RNN,CNN,yer1,yer2,yer3,yer4,yer5,yer6,yer7,"","","Train&Test_RMSE_Mean_Comparison",4)
 
 def Plot_Step_RMSE_Mean(name,Overall_Analysis,n_steps_out):
     MLP_Adam=Overall_Analysis[0,10:n_steps_out*5+10:5]
@@ -74,26 +76,29 @@ def Plot_Step_RMSE_Mean(name,Overall_Analysis,n_steps_out):
     Bi_LSTM=Overall_Analysis[3,10:n_steps_out*5+10:5]
     EN_DC=Overall_Analysis[4,10:n_steps_out*5+10:5]
     RNN=Overall_Analysis[5,10:n_steps_out*5+10:5]
+    CNN=Overall_Analysis[6,10:n_steps_out*5+10:5]
     yer1=np.subtract(Overall_Analysis[0,13:n_steps_out*5+10:5],MLP_Adam)
     yer2=np.subtract(Overall_Analysis[1,13:n_steps_out*5+10:5],MLP_Sgd)
     yer3=np.subtract(Overall_Analysis[2,13:n_steps_out*5+10:5],LSTM)
     yer4=np.subtract(Overall_Analysis[3,13:n_steps_out*5+10:5],Bi_LSTM)
     yer5=np.subtract(Overall_Analysis[4,13:n_steps_out*5+10:5],EN_DC)
     yer6=np.subtract(Overall_Analysis[5,13:n_steps_out*5+10:5],RNN)
+    yer7=np.subtract(Overall_Analysis[6,13:n_steps_out*5+10:5],CNN)
     labels = []
     for j in range(n_steps_out):
         labels=np.concatenate((labels,[str(j+1)]))
-    width = 0.13  # the width of the bars
-    Plot(name,labels,width,MLP_Adam,MLP_Sgd,LSTM,Bi_LSTM,EN_DC,RNN,yer1,yer2,yer3,yer4,yer5,yer6,"Steps","RMSE(Mean)","Step_RMSE_Comparison",2)
+    width = 0.12  # the width of the bars
+    Plot(name,labels,width,MLP_Adam,MLP_Sgd,LSTM,Bi_LSTM,EN_DC,RNN,CNN,yer1,yer2,yer3,yer4,yer5,yer6,yer7,"Steps","RMSE(Mean)","Step_RMSE_Comparison",2)
     
 
-def Plot(name,labels,width,MLP_Adam,MLP_Sgd,LSTM,Bi_LSTM,EN_DC,RNN,yer1,yer2,yer3,yer4,yer5,yer6,xlabel,ylabel,Gname,cap):
+def Plot(name,labels,width,MLP_Adam,MLP_Sgd,LSTM,Bi_LSTM,EN_DC,RNN,CNN,yer1,yer2,yer3,yer4,yer5,yer6,yer7,xlabel,ylabel,Gname,cap):
     r1 = np.arange(len(labels))
     r2 = [x + width for x in r1]
     r3 = [x + width for x in r2]
     r4 = [x + width for x in r3]
     r5 = [x + width for x in r4]
     r6 = [x + width for x in r5]
+    r7 = [x + width for x in r6]
 
     fig, ax = plt.subplots()
     rects1 = ax.bar(r1, MLP_Adam, width,edgecolor = 'black', yerr=yer1, capsize=cap, label='FNN-Adam')
@@ -102,6 +107,7 @@ def Plot(name,labels,width,MLP_Adam,MLP_Sgd,LSTM,Bi_LSTM,EN_DC,RNN,yer1,yer2,yer
     rects4 = ax.bar(r4, Bi_LSTM, width,edgecolor = 'black', yerr=yer4,capsize=cap,  label='BD-LSTM')
     rects5 = ax.bar(r5, EN_DC, width,edgecolor = 'black', yerr=yer5,capsize=cap,  label='ED-LSTM')
     rects6 = ax.bar(r6, RNN, width,edgecolor = 'black', yerr=yer6,capsize=cap,  label='RNN')
+    rects7 = ax.bar(r7, CNN, width,edgecolor = 'black', yerr=yer7,capsize=cap,  label='CNN')
     
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
@@ -357,6 +363,46 @@ def MODEL_RNN(x_train,x_test,y_train,y_test,Num_Exp,n_steps_in,n_steps_out,Epoch
     print("Total time for",Num_Exp,"experiments",time.time()-start_time)
     return train_acc,test_acc,Step_RMSE,Best_Predict_Test.reshape(y_test.shape[0], y_test.shape[1])
 
+def MODEL_CNN(x_train,x_test,y_train,y_test,Num_Exp,n_steps_in,n_steps_out,Epochs,Hidden):
+    n_features = 1
+    x_train = x_train.reshape((x_train.shape[0], x_train.shape[1], n_features))
+    print(x_train.shape)
+    x_test = x_test.reshape((x_test.shape[0], x_test.shape[1], n_features))
+    print(x_test.shape)
+    
+    train_acc=np.zeros(Num_Exp)
+    test_acc=np.zeros(Num_Exp)
+    Step_RMSE=np.zeros([Num_Exp,n_steps_out])
+    
+    # define model
+    model = Sequential()
+    model.add(Conv1D(filters=64, kernel_size=3, activation='relu', input_shape=(n_steps_in,n_features)))
+    model.add(MaxPooling1D(pool_size=2))
+    model.add(Flatten())
+    model.add(Dense(Hidden, activation='relu'))
+    model.add(Dense(n_steps_out))
+    model.compile(optimizer='adam', loss='mse')
+    print(model.summary())
+    Best_RMSE=1000   #Assigning a large number 
+    
+    start_time=time.time()
+    for run in range(Num_Exp):
+        print("Experiment",run+1,"in progress")
+        # fit model
+        model.fit(x_train, y_train, epochs=Epochs,batch_size=64, verbose=0, shuffle=False)
+        y_predicttrain = model.predict(x_train)
+        y_predicttest = model.predict(x_test)
+        train_acc[run] = rmse( y_predicttrain,y_train) 
+        test_acc[run] = rmse( y_predicttest, y_test) 
+        if test_acc[run]<Best_RMSE:
+            Best_RMSE=test_acc[run]
+            Best_Predict_Test=y_predicttest
+        for j in range(n_steps_out):
+            Step_RMSE[run][j]=rmse(y_predicttest[:,j], y_test[:,j])
+            
+    print("Total time for",Num_Exp,"experiments",time.time()-start_time)
+    return train_acc,test_acc,Step_RMSE,Best_Predict_Test
+
 
 # In[5]:
 
@@ -428,7 +474,7 @@ def main():
         Step_RMSE=np.zeros([Num_Exp,n_steps_out])
 
 
-        for k in range(1,7):
+        for k in range(7,8):
 
             method=k
             if method ==1:
@@ -449,6 +495,10 @@ def main():
             if method ==6:
                 train_acc,test_acc,Step_RMSE,Best_Predict_Test=MODEL_RNN(x_train,x_test,y_train,y_test,Num_Exp,n_steps_in,n_steps_out,Epochs,Hidden)
                 Mname="MODEL_RNN"
+            if method ==7:
+                train_acc,test_acc,Step_RMSE,Best_Predict_Test=MODEL_RNN(x_train,x_test,y_train,y_test,Num_Exp,n_steps_in,n_steps_out,Epochs,Hidden)
+                Mname="MODEL_CNN"
+                
 
             print(Mname)
 
@@ -480,16 +530,16 @@ def main():
             Test_CI_LB= Test_Mean-1.96*(Test_Std/np.sqrt(Num_Exp))
             Test_CI_UB= Test_Mean+1.96*(Test_Std/np.sqrt(Num_Exp))
             
-            Overall_Analysis[(i-1)*6+(k-1)][0]=Train_Mean
-            Overall_Analysis[(i-1)*6+(k-1)][1]=Train_Std
-            Overall_Analysis[(i-1)*6+(k-1)][2]=Train_CI_LB
-            Overall_Analysis[(i-1)*6+(k-1)][3]=Train_CI_UB
-            Overall_Analysis[(i-1)*6+(k-1)][4]=np.min(train_acc)
-            Overall_Analysis[(i-1)*6+(k-1)][5]=Test_Mean
-            Overall_Analysis[(i-1)*6+(k-1)][6]=Test_Std
-            Overall_Analysis[(i-1)*6+(k-1)][7]=Test_CI_LB
-            Overall_Analysis[(i-1)*6+(k-1)][8]=Test_CI_UB
-            Overall_Analysis[(i-1)*6+(k-1)][9]=np.min(test_acc)
+            Overall_Analysis[(i-1)*7+(k-1)][0]=Train_Mean
+            Overall_Analysis[(i-1)*7+(k-1)][1]=Train_Std
+            Overall_Analysis[(i-1)*7+(k-1)][2]=Train_CI_LB
+            Overall_Analysis[(i-1)*7+(k-1)][3]=Train_CI_UB
+            Overall_Analysis[(i-1)*7+(k-1)][4]=np.min(train_acc)
+            Overall_Analysis[(i-1)*7+(k-1)][5]=Test_Mean
+            Overall_Analysis[(i-1)*7+(k-1)][6]=Test_Std
+            Overall_Analysis[(i-1)*7+(k-1)][7]=Test_CI_LB
+            Overall_Analysis[(i-1)*7+(k-1)][8]=Test_CI_UB
+            Overall_Analysis[(i-1)*7+(k-1)][9]=np.min(test_acc)
             
             arr1 = np.vstack(([Train_Mean,Train_Std,Train_CI_LB,Train_CI_UB,np.min(train_acc),np.max(train_acc)],[Test_Mean,Test_Std,Test_CI_LB,Test_CI_UB,np.min(test_acc),np.max(test_acc)]))
             
@@ -500,11 +550,11 @@ def main():
                 Step_CI_LB= Step_mean-1.96*(Step_std/np.sqrt(Num_Exp))
                 Step_CI_UB= Step_mean+1.96*(Step_std/np.sqrt(Num_Exp))
                 arr1=np.vstack((arr1,[Step_mean,Step_std,Step_CI_LB,Step_CI_UB,Step_min,np.max(Step_RMSE[:,j])]))
-                Overall_Analysis[(i-1)*6+(k-1)][5*j+10]= Step_mean
-                Overall_Analysis[(i-1)*6+(k-1)][5*j+11]= Step_std
-                Overall_Analysis[(i-1)*6+(k-1)][5*j+12]= Step_CI_LB
-                Overall_Analysis[(i-1)*6+(k-1)][5*j+13]= Step_CI_UB
-                Overall_Analysis[(i-1)*6+(k-1)][5*j+14]= Step_min
+                Overall_Analysis[(i-1)*7+(k-1)][5*j+10]= Step_mean
+                Overall_Analysis[(i-1)*7+(k-1)][5*j+11]= Step_std
+                Overall_Analysis[(i-1)*7+(k-1)][5*j+12]= Step_CI_LB
+                Overall_Analysis[(i-1)*7+(k-1)][5*j+13]= Step_CI_UB
+                Overall_Analysis[(i-1)*7+(k-1)][5*j+14]= Step_min
             arr1=np.round_(arr1, decimals = 5) 
             arr1 = pd.DataFrame(arr1, index=ExpIndex1, columns = ['Mean','Standard Deviation','CI_LB','CI_UB','Min','Max'])
             print(arr1)
@@ -528,19 +578,19 @@ def main():
         
         #Plot mean of train_RMSE and test_RMSE
         #Plot Std of train_RMSE and test_RMSE
-        Plot_Mean_Std(name,Overall_Analysis[6*(i-1):(6*i),:],n_steps_out)
+        Plot_Mean(name,Overall_Analysis[7*(i-1):(7*i),:],n_steps_out)
         #Plot Step wise RMSE mean for different methods
-        Plot_Step_RMSE_Mean(name,Overall_Analysis[6*(i-1):(6*i),:],n_steps_out)
+        Plot_Step_RMSE_Mean(name,Overall_Analysis[7*(i-1):(7*i),:],n_steps_out)
     
     Overall_Analysis=Overall_Analysis.astype('float64')
-    Overall_Analysis=np.round_(Overall_Analysis, decimals = 5)  
+    Overall_Analysis=np.round_(Overall_Analysis, decimals = 4)  
     Index1=[]
     for j in range(7):
-        Index1=np.concatenate((Index1, ['FNN-Adam','FNN-SGD','LSTM','BD-LSTM','ED-LSTM','RNN']))
+        Index1=np.concatenate((Index1, ['FNN-Adam','FNN-SGD','LSTM','BD-LSTM','ED-LSTM','RNN','CNN']))
     Index2=["Lazer","Sunspot","Mackey","Lorenz","Rossler","Henon","ACFinance"]
-    Index2=np.repeat(Index2,6)
+    Index2=np.repeat(Index2,7)
     Index=np.dstack((Index2,Index1))
-    Index=Index.reshape(42,2)
+    Index=Index.reshape(49,2)
     Column=['Dataset','Method','Train-RMSE_Mean','Train-RMSE_Std','Train-CI-LB','Train-CI-UB','TrainRMSE_Min','TestRMSE-Mean','TestRMSE-Std','Test-CI-LB','Test-CI-UB','Test-RMSE-Min']
     for j in range(1,11):
         Column=np.concatenate((Column, ['Step'+str(j)+'-RMSE-Mean','Step'+str(j)+'-RMSE-Std','Step'+str(j)+'-CI-LB','Step'+str(j)+'-CI-UB','Step'+str(j)+'-RMSE-Min']))
@@ -553,26 +603,3 @@ def main():
     
     
 if __name__ == "__main__": main()
-
-
-# In[30]:
-
-
-Overall_Analysis = pd.read_csv("Results_28th/Results/OverallAnalysis.csv",index_col = 0)
-Overall_Analysis=Overall_Analysis[['Dataset','Method','Train-RMSE-Mean','Test-RMSE-Mean','Step1-RMSE-Mean','Step2-RMSE-Mean','Step3-RMSE-Mean','Step4-RMSE-Mean','Step5-RMSE-Mean','Step6-RMSE-Mean','Step7-RMSE-Mean','Step8-RMSE-Mean','Step9-RMSE-Mean','Step10-RMSE-Mean']]
-Overall_Analysis=Overall_Analysis.values
-n_steps_out=10
-for i in range(1,8):
-    name=Overall_Analysis[6*(i-1)][0]
-    temp=Overall_Analysis[6*(i-1):(6*i),2:]
-    temp = pd.DataFrame(temp, index=['FNN-Adam','FNN-SGD','LSTM','BD-LSTM','ED-LSTM','RNN'], columns = ['Train-RMSE-Mean','Test-RMSE-Mean','Step1-RMSE-Mean','Step2-RMSE-Mean','Step3-RMSE-Mean','Step4-RMSE-Mean','Step5-RMSE-Mean','Step6-RMSE-Mean','Step7-RMSE-Mean','Step8-RMSE-Mean','Step9-RMSE-Mean','Step10-RMSE-Mean'])
-    print(temp)
-    temp.to_csv("Results_28th/Results/"+name+"/Analysis.csv")
-    
-
-
-# In[ ]:
-
-
-
-
