@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 from math import sqrt
@@ -34,6 +34,9 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
+from keras.layers import Flatten
+from keras.layers.convolutional import Conv1D
+from keras.layers.convolutional import MaxPooling1D
 
 
 # In[2]:
@@ -408,7 +411,7 @@ def MODEL_CNN(x_train,x_test,y_train,y_test,Num_Exp,n_steps_in,n_steps_out,Epoch
 
 
 def main():
-    
+
     n_steps_in, n_steps_out = 5,10
     
 #     Overall_Analysis=np.zeros([42,10+n_steps_out*5])
@@ -496,7 +499,7 @@ def main():
                 train_acc,test_acc,Step_RMSE,Best_Predict_Test=MODEL_RNN(x_train,x_test,y_train,y_test,Num_Exp,n_steps_in,n_steps_out,Epochs,Hidden)
                 Mname="MODEL_RNN"
             if method ==7:
-                train_acc,test_acc,Step_RMSE,Best_Predict_Test=MODEL_RNN(x_train,x_test,y_train,y_test,Num_Exp,n_steps_in,n_steps_out,Epochs,Hidden)
+                train_acc,test_acc,Step_RMSE,Best_Predict_Test=MODEL_CNN(x_train,x_test,y_train,y_test,Num_Exp,n_steps_in,n_steps_out,Epochs,Hidden)
                 Mname="MODEL_CNN"
                 
 
@@ -591,7 +594,7 @@ def main():
     Index2=np.repeat(Index2,7)
     Index=np.dstack((Index2,Index1))
     Index=Index.reshape(49,2)
-    Column=['Dataset','Method','Train-RMSE_Mean','Train-RMSE_Std','Train-CI-LB','Train-CI-UB','TrainRMSE_Min','TestRMSE-Mean','TestRMSE-Std','Test-CI-LB','Test-CI-UB','Test-RMSE-Min']
+    Column=['Dataset','Method','Train-RMSE-Mean','Train-RMSE-Std','Train-CI-LB','Train-CI-UB','TrainRMSE-Min','Test-RMSE-Mean','Test-RMSE-Std','Test-CI-LB','Test-CI-UB','Test-RMSE-Min']
     for j in range(1,11):
         Column=np.concatenate((Column, ['Step'+str(j)+'-RMSE-Mean','Step'+str(j)+'-RMSE-Std','Step'+str(j)+'-CI-LB','Step'+str(j)+'-CI-UB','Step'+str(j)+'-RMSE-Min']))
   
@@ -603,3 +606,82 @@ def main():
     
     
 if __name__ == "__main__": main()
+
+
+# In[6]:
+
+
+# Overall_Analysis = pd.read_csv("Results/OverallAnalysis.csv",index_col = 0)
+# Overall_Analysis=Overall_Analysis.values
+# n_steps_out=10
+# for i in range(1,8):
+#     name=Overall_Analysis[6*(i-1)][0]
+#     mname=Overall_Analysis[6*(i-1)][1]
+    
+
+
+# In[7]:
+
+
+# Overall_Analysis = pd.read_csv("Results_28th/Results/OverallAnalysis.csv",index_col = 0)
+# Overall_Analysis=Overall_Analysis[['Dataset','Method','Train-RMSE-Mean','Test-RMSE-Mean','Step1-RMSE-Mean','Step2-RMSE-Mean','Step3-RMSE-Mean','Step4-RMSE-Mean','Step5-RMSE-Mean','Step6-RMSE-Mean','Step7-RMSE-Mean','Step8-RMSE-Mean','Step9-RMSE-Mean','Step10-RMSE-Mean']]
+# Overall_Analysis=Overall_Analysis.values
+# n_steps_out=10
+# for i in range(1,8):
+#     name=Overall_Analysis[6*(i-1)][0]
+#     temp=Overall_Analysis[6*(i-1):(6*i),2:]
+#     temp=np.transpose(temp)
+#     temp=temp.astype('float64')
+#     temp=np.round_(temp, decimals = 5) 
+#     temp = pd.DataFrame(temp, index=['Train-RMSE-Mean','Test-RMSE-Mean','Step1-RMSE-Mean','Step2-RMSE-Mean','Step3-RMSE-Mean','Step4-RMSE-Mean','Step5-RMSE-Mean','Step6-RMSE-Mean','Step7-RMSE-Mean','Step8-RMSE-Mean','Step9-RMSE-Mean','Step10-RMSE-Mean'], columns =['FNN-Adam','FNN-SGD','LSTM','BD-LSTM','ED-LSTM','RNN'] )
+#     print(temp)
+#     temp.to_csv("Results_28th/Results/"+name+"/AnalysisCopy.csv")
+    
+
+
+# In[8]:
+
+
+# Overall_Analysis = pd.read_csv("Results_28th/Overleaf.csv",index_col = 0)
+# # Overall_Analysis=Overall_Analysis[['Dataset','Method',['Dataset','Method','Train-RMSE_Mean','Train-CI-UB','TestRMSE-Mean','Test-CI-UB','Step1-RMSE-Mean','Step1-CI-UB','Step2-RMSE-Mean','Step1-CI-UB','Step3-RMSE-Mean','Step1-CI-UB','Step4-RMSE-Mean','Step1-CI-UB','Step5-RMSE-Mean','Step1-CI-UB','Step6-RMSE-Mean','Step1-CI-UB','Step7-RMSE-Mean','Step1-CI-UB','Step8-RMSE-Mean','Step1-CI-UB','Step9-RMSE-Mean','Step10-RMSE-Mean']]
+# Overall_Analysis=Overall_Analysis.values
+# Overall_Analysis=Overall_Analysis[:,2:]
+# Overall_Analysis=Overall_Analysis.astype('float64')
+# Overall_Analysis=np.round_(Overall_Analysis, decimals = 4)  
+# Index1=[]
+# for j in range(7):
+#     Index1=np.concatenate((Index1, ['FNN-Adam','FNN-SGD','LSTM','BD-LSTM','ED-LSTM','RNN']))
+# Index2=["Lazer","Sunspot","Mackey","Lorenz","Rossler","Henon","ACFinance"]
+# Index2=np.repeat(Index2,6)
+# Index=np.dstack((Index2,Index1))
+# Index=Index.reshape(42,2)
+# Column=['Dataset','Method','Train-RMSE_Mean',"CI",'Train-CI-UB','TestRMSE-Mean','CI','Test-CI-UB']
+# for j in range(1,11):
+#     Column=np.concatenate((Column, ['Step'+str(j)+'-RMSE-Mean','CI','Step'+str(j)+'-CI-UB']))
+
+# Overall_Analysis=np.concatenate((Index,Overall_Analysis), axis=1)
+# Overall_Analysis = pd.DataFrame(Overall_Analysis, columns = Column)
+# print(Overall_Analysis)
+# Overall_Analysis.to_csv("Results_28th/Results/Online.csv")
+
+
+# In[4]:
+
+
+# data= np.loadtxt("../data/Sunspot/scaled_dataset.txt", delimiter =', ')
+# data=data[0:200]
+# x_data=np.linspace(0,data.shape[0], num=data.shape[0])
+# plt.figure()
+# plt.plot(x_data, data)
+# plt.xlabel('Time (samples)') 
+# plt.legend()
+# plt.savefig("Results/Sunspot/data.png",dpi=500) 
+# plt.show()
+# plt.close()
+
+
+# In[ ]:
+
+
+
+
